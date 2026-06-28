@@ -1,545 +1,133 @@
-# CONTRIBUTING.md
-
 # Contributing to IntellMeet
 
-Thank you for contributing to IntellMeet.
+This guide defines how the team assigns work, changes contracts, and moves code into shared branches.
 
-This document defines the official development workflow, branch strategy, pull request process, repository structure, ownership rules, and collaboration standards.
+## Before Starting
 
-Every contributor must follow this document before making any code changes.
+1. Read the [project status](docs/PROJECT_STATUS.md) and [implementation plan](docs/IMPLEMENTATION_PLAN.md).
+2. Confirm ownership in [Team Ownership](docs/TEAM_OWNERSHIP.md). Record the assignee before implementation begins.
+3. Complete the [Local Setup](docs/LOCAL_SETUP.md), including MongoDB and `backend/.env`.
+4. Pull the latest `develop` branch and create one focused branch.
+5. Copy the relevant `.env.example`; never share or commit real credentials.
 
----
+## Branches
 
-# Repository Governance
-
-## Project Lead
-
-The Project Lead is responsible for:
-
-* Repository configuration
-* Branch protection
-* Pull Request reviews
-* Merge approvals
-* Release management
-* Production deployment
-
-Only the Project Lead may merge code into:
+`main` contains release-ready code. `develop` is the integration branch. Feature work must use a short-lived branch:
 
 ```text
-develop
-main
+feature/webrtc-meeting-room
+feature/team-workspaces
+fix/socket-authorization
+test/auth-integration
+docs/deployment-guide
 ```
-
-Contributors must never merge their own Pull Requests.
-
----
-
-# Branch Strategy
-
-The repository follows a Git Flow inspired workflow.
-
-## Permanent Branches
-
-```text
-main
-develop
-```
-
-### main
-
-Production-ready code only.
-
-Rules:
-
-* No direct commits
-* No direct pushes
-* Merge only from develop
-
----
-
-### develop
-
-Integration branch.
-
-Rules:
-
-* Feature branches merge here
-* Testing occurs here
-* Only Project Lead merges PRs
-
----
-
-# Feature Branch Naming
-
-Every task must have its own branch.
-
-Format:
-
-```text
-feature/<feature-name>
-```
-
-Examples:
-
-```text
-feature/authentication
-feature/dashboard-ui
-feature/meeting-room
-feature/chat-module
-feature/ai-summary
-feature/task-management
-feature/analytics
-```
-
-Bug fixes:
-
-```text
-fix/socket-connection
-fix/login-validation
-```
-
-Documentation:
-
-```text
-docs/api-documentation
-docs/readme-update
-```
-
----
-
-# First Time Setup
-
-Clone repository:
-
-```bash
-git clone <repo-url>
-```
-
-Move into repository:
-
-```bash
-cd intellmeet
-```
-
-Checkout develop:
 
 ```bash
 git checkout develop
-```
-
-Pull latest code:
-
-```bash
 git pull origin develop
+git checkout -b feature/short-description
 ```
 
----
+Do not push directly to `main` or `develop`, force-push a shared branch, or merge your own pull request.
 
-# Creating a Feature Branch
+## Development Standards
 
-Never work directly on develop.
+- Keep changes within the module named in the issue or ownership table.
+- Preserve the existing API prefix and response shape unless the contract change is agreed first.
+- Validate all external input and enforce authorization server-side.
+- Add tests for new behavior and regressions. Do not rely only on manual verification.
+- Update the relevant documentation in the same pull request.
+- Use meaningful names and comments only where the reason is not evident from the code.
+- Do not commit `.env`, keys, tokens, recordings, database dumps, `node_modules`, or build output.
 
-Create your own branch:
+The backend uses JavaScript ES modules. The frontend uses TypeScript. New backend files should not reintroduce TypeScript unless the team approves a complete migration.
 
-```bash
-git checkout develop
+## Commit Messages
 
-git pull origin develop
-
-git checkout -b feature/chat-module
-```
-
-Example:
-
-```bash
-git checkout -b feature/authentication
-```
-
----
-
-# Daily Development Workflow
-
-Before starting work every day:
-
-```bash
-git checkout develop
-
-git pull origin develop
-```
-
-Update your feature branch:
-
-```bash
-git checkout feature/chat-module
-
-git merge develop
-```
-
-Resolve conflicts if any.
-
-Then continue development.
-
----
-
-# Commit Rules
-
-Every commit must be meaningful.
-
-## Allowed
+Use a conventional type and an imperative summary:
 
 ```text
-feat: add login endpoint
-feat: create dashboard layout
-fix: resolve websocket disconnect issue
-refactor: optimize auth middleware
-docs: update api documentation
-test: add auth test cases
+feat: add authenticated WebRTC signaling
+fix: restrict meeting chat to participants
+test: cover refresh token rejection
+docs: document Atlas database setup
+chore: add local service container
 ```
 
-## Not Allowed
+Prefer small commits that leave the affected package in a runnable state.
 
-```text
-update
-done
-latest
-work
-new
-final
-```
+## Required Checks
 
----
+Every pull request runs the backend and frontend workflows, even when a change appears to affect only one package. A pull request must not be approved, accepted, or merged unless both required checks are green on the latest commit:
 
-# Pull Request Process
+- `Backend CI / Backend quality`
+- `Frontend CI / Frontend quality`
 
-After completing work:
+Pending, skipped, cancelled, or failing checks do not count as passed. Review approval never overrides CI. See [CI and Branch Protection](docs/CI_AND_BRANCH_PROTECTION.md) for the repository rules that enforce this policy.
+
+Backend:
 
 ```bash
-git add .
-
-git commit -m "feat: implement chat module"
-
-git push origin feature/chat-module
+cd backend
+npm ci
+npm run lint
+npm test
+npm run build
 ```
 
-Create Pull Request:
+Frontend:
 
-```text
-feature/chat-module
-        ↓
-develop
+```bash
+cd frontend
+npm ci
+npm run lint
+npm run build
 ```
 
-PR title example:
+When a change affects an endpoint, socket event, database model, or environment variable, update the corresponding file in `docs/`.
 
-```text
-feat: implement real-time chat module
-```
+## Pull Requests
 
----
+Open feature pull requests against `develop`. A pull request should contain:
 
-# Pull Request Requirements
-
-Before creating PR ensure:
-
-* Project builds successfully
-* No TypeScript errors
-* No ESLint errors
-* No console warnings
-* No unnecessary files
-* Documentation updated if needed
-
----
-
-# Pull Request Template
-
-Include:
-
+```markdown
 ## Summary
+What changed and why.
 
-Describe what was implemented.
+## Scope
+- Included behavior
+- Explicitly excluded behavior
 
-## Changes
+## Verification
+- Commands run
+- Manual scenarios checked
 
-* Added feature X
-* Added API Y
-* Updated component Z
+## Contract or data changes
+Endpoints, events, models, migrations, or environment variables. Write "None" when applicable.
 
-## Testing
+## Evidence
+Screenshots, API output, or logs relevant to the change.
 
-* Tested locally
-* Screenshots attached
-
----
-
-# Code Review Process
-
-The Project Lead reviews:
-
-* Folder structure
-* Code quality
-* Naming conventions
-* Performance
-* Security concerns
-
-Review outcomes:
-
-```text
-Approved
-Changes Requested
-Rejected
+## Follow-up
+Known limitations or linked tasks.
 ```
 
----
+The reviewer checks correctness, access control, validation, failure behavior, test coverage, compatibility, and documentation. Resolve review threads before merge.
 
-# Merge Policy
+## Shared Contracts
 
-Only Project Lead may merge.
+Coordinate before changing JWT payloads, database schemas, API response envelopes, socket events, environment variable names, package manifests, CI workflows, or deployment configuration. Breaking changes require a migration note and updates to both producers and consumers.
 
-Flow:
+## Definition of Done
 
-```text
-feature/*
-      ↓
-Pull Request
-      ↓
-Review
-      ↓
-develop
-      ↓
-Testing
-      ↓
-main
-```
+A task is complete when:
 
-Contributors are NOT allowed to:
+- Its acceptance criteria are demonstrably met.
+- Relevant lint, build, and test commands pass.
+- Authorization and validation paths are covered.
+- Documentation and environment examples are current.
+- No secrets, debug artifacts, or unrelated changes are included.
+- A reviewer other than the author approves the pull request.
+- Both required GitHub Actions checks pass on the latest commit.
 
-* Merge into develop
-* Merge into main
-* Force push shared branches
-
----
-
-# Repository Structure
-
-## Root Structure
-
-```text
-intellmeet/
-
-├── frontend/
-├── backend/
-├── docs/
-
-├── README.md
-├── CONTRIBUTING.md
-├── .env.example
-├── .gitignore
-```
-
----
-
-# Frontend Structure
-
-```text
-frontend/src
-
-├── assets/
-├── components/
-│
-├── pages/
-│
-├── hooks/
-│
-├── services/
-│
-├── routes/
-│
-├── store/
-│
-├── types/
-│
-├── App.tsx
-└── main.tsx
-```
-
----
-
-# Component Structure
-
-Each component must have its own folder.
-
-Example:
-
-```text
-components/
-
-Navbar/
-├── Navbar.tsx
-├── Navbar.types.ts
-└── index.ts
-
-ChatBox/
-├── ChatBox.tsx
-├── ChatBox.types.ts
-└── index.ts
-```
-
----
-
-# Backend Structure
-
-```text
-backend/src
-
-├── config/
-├── controllers/
-├── middleware/
-├── models/
-├── routes/
-├── services/
-├── sockets/
-├── ai/
-├── validations/
-├── utils/
-└── server.ts
-```
-
----
-
-# Ownership Matrix
-
-## Member 1
-
-Authentication
-
-Branch:
-
-```text
-feature/authentication
-```
-
-Ownership:
-
-* User Model
-* Login
-* Register
-* JWT
-* Profile
-
----
-
-## Member 2
-
-Frontend
-
-Branch:
-
-```text
-feature/frontend-core
-```
-
-Ownership:
-
-* Layout
-* Navbar
-* Dashboard
-* Routing
-
----
-
-## Member 3
-
-Real-Time
-
-Branch:
-
-```text
-feature/realtime
-```
-
-Ownership:
-
-* Socket.io
-* Chat
-* Meeting Room
-* Notifications
-* WebRTC
-
----
-
-## Member 4
-
-AI & Productivity
-
-Branch:
-
-```text
-feature/ai
-```
-
-Ownership:
-
-* AI Summary
-* Action Items
-* Tasks
-* Analytics
-
----
-
-# Protected Files
-
-Only Project Lead may modify:
-
-```text
-package.json
-vite.config.ts
-tsconfig.json
-docker-compose.yml
-github workflows
-deployment files
-```
-
-without discussion.
-
----
-
-# Prohibited Actions
-
-Never:
-
-* Push directly to main
-* Push directly to develop
-* Commit .env
-* Commit API keys
-* Delete another member's code
-* Force push shared branches
-
----
-
-# Development Lifecycle
-
-```text
-Repository Setup
-        ↓
-Feature Branch Creation
-        ↓
-Development
-        ↓
-Commit
-        ↓
-Push
-        ↓
-Pull Request
-        ↓
-Code Review
-        ↓
-Merge into Develop
-        ↓
-Testing
-        ↓
-Merge into Main
-        ↓
-Release
-```
-
-Following this workflow is mandatory for all contributors.
+Only the project lead merges into `develop` and promotes a tested integration build to `main`.

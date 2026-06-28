@@ -1,326 +1,113 @@
-# IntellMeet - AI Powered Enterprise Meeting & Collaboration Platform
+# IntellMeet
 
-## Overview
+IntellMeet is an enterprise meeting and collaboration platform built around secure meeting workflows, real-time communication, and AI-assisted follow-up. The repository currently contains a working backend foundation and a React frontend scaffold ready for product development.
 
-IntellMeet is a production-grade enterprise collaboration platform built using the MERN stack. The platform enables teams to conduct real-time meetings, communicate through chat, generate AI-powered meeting summaries, manage tasks, and track productivity through analytics.
+## Project Status
 
-## Project Goals
+| Area | Status | Current scope |
+| --- | --- | --- |
+| Authentication | Implemented | Registration, login, token refresh, Google ID token login, JWT middleware |
+| User profiles | Partial | Authenticated profile read endpoint |
+| Meetings | Implemented foundation | Create, list, detail, participant access, host-controlled status updates |
+| Real-time collaboration | Implemented foundation | Room join, typing, and persisted chat events |
+| AI meeting intelligence | Implemented foundation | Transcript input, summary generation, action-item extraction and persistence |
+| Frontend | Scaffold only | React, TypeScript, Vite, lint and build configuration |
+| Video and screen sharing | Not started | WebRTC meeting room and signaling are still required |
+| Team productivity | Not started | Workspaces, projects, boards, tasks, notifications, and analytics |
+| Production operations | Partial | Pull-request CI exists; deployment, monitoring, and load testing remain |
 
-* Real-time video meetings
-* Team collaboration
-* AI meeting summaries
-* Action item extraction
-* Task management
-* Analytics dashboard
-* Enterprise-grade architecture
+Detailed implementation evidence and the remaining assignment scope are recorded in [Project Status](docs/PROJECT_STATUS.md).
 
----
+## Technology
 
-## Technology Stack
+| Layer | Current technology |
+| --- | --- |
+| Frontend | React 19, TypeScript, Vite |
+| Backend | Node.js 20+, Express, JavaScript ES modules |
+| Database | MongoDB, Mongoose |
+| Real-time | Socket.io |
+| Cache | Redis, optional in local development |
+| Authentication | JWT, bcrypt, Google ID token verification |
+| AI | OpenAI Responses API with a no-key development fallback |
+| Validation and security | Zod, Helmet, CORS, rate limiting |
+| Automation | GitHub Actions |
 
-### Frontend
-
-* React 19
-* TypeScript
-* Vite
-* Tailwind CSS v4
-* shadcn/ui
-* TanStack Query
-* Zustand
-* Socket.io Client
-
-### Backend
-
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* Socket.io
-* WebRTC
-* JWT
-* bcrypt
-
-### AI
-
-* OpenAI / Hugging Face
-
-### Storage & Cache
-
-* Cloudinary
-* Redis
-
----
-
-## Project Structure
+## Repository Layout
 
 ```text
 intellmeet/
-│
-├── frontend/
-│
-├── backend/
-│
-├── docs/
-│
-├── .github/
-│
-├── README.md
-├── CONTRIBUTING.md
-├── .gitignore
-└── .env.example
+|-- backend/                 Express API, models, services, and Socket.io server
+|-- frontend/                React application
+|-- docs/                    Architecture, setup, status, ownership, and delivery plan
+|-- .github/workflows/       Pull-request checks
+|-- CONTRIBUTING.md          Team workflow and review requirements
+`-- README.md                Project entry point
 ```
 
----
+## Local Development
 
-## Frontend Structure
+Prerequisites:
 
-```text
-frontend/
-│
-├── public/
-│
-├── src/
-│
-├── assets/
-│
-├── components/
-│   ├── common/
-│   ├── auth/
-│   ├── dashboard/
-│   ├── meeting/
-│   ├── chat/
-│   └── task/
-│
-├── pages/
-│   ├── Login/
-│   ├── Register/
-│   ├── Dashboard/
-│   ├── MeetingRoom/
-│   ├── Workspace/
-│   └── Analytics/
-│
-├── hooks/
-│
-├── services/
-│
-├── store/
-│
-├── routes/
-│
-├── types/
-│
-├── App.tsx
-└── main.tsx
-```
+- Node.js 20 or newer
+- npm
+- MongoDB 7 or a MongoDB Atlas database
+- Redis 7 only when Redis-backed work is being developed
 
----
+For a complete first-time setup, including MongoDB Atlas, local MongoDB, `.env`, JWT secrets, and database verification, follow [Local Setup](docs/LOCAL_SETUP.md).
 
-## Backend Structure
-
-```text
-backend/
-│
-├── src/
-│
-├── config/
-│
-├── controllers/
-│
-├── middleware/
-│
-├── models/
-│
-├── routes/
-│
-├── services/
-│
-├── sockets/
-│
-├── ai/
-│
-├── utils/
-│
-├── validations/
-│
-└── server.ts
-```
-
----
-
-## Branch Strategy
-
-Never push directly to main.
-
-```text
-main
-│
-develop
-│
-├── feature/auth
-├── feature/frontend
-├── feature/realtime
-├── feature/meeting
-├── feature/dashboard
-├── feature/ai
-├── feature/tasks
-└── feature/analytics
-```
-
----
-
-## Development Workflow
-
-Step 1:
-
-```bash
-git checkout develop
-git pull origin develop
-```
-
-Step 2:
-
-Create feature branch
-
-```bash
-git checkout -b feature/feature-name
-```
-
-Step 3:
-
-Work on your assigned task.
-
-Step 4:
-
-Commit changes
-
-```bash
-git add .
-git commit -m "feat: add login page"
-```
-
-Step 5:
-
-Push branch
-
-```bash
-git push origin feature/feature-name
-```
-
-Step 6:
-
-Create Pull Request
-
-```text
-feature/feature-name → develop
-```
-
-Step 7:
-
-After review, merge into develop.
-
----
-
-## Team Responsibilities
-
-### Member 1
-
-Authentication
-
-* Login
-* Register
-* JWT
-* User Profile
-
-### Member 2
-
-Frontend Core
-
-* Layout
-* Navbar
-* Dashboard UI
-* Routing
-
-### Member 3
-
-Real-Time Features
-
-* Socket.io
-* Chat
-* Meeting Room
-* WebRTC
-
-### Member 4
-
-AI & Productivity
-
-* AI Summary
-* Action Items
-* Tasks
-* Analytics
-
----
-
-## Installation
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### Backend
+Start the backend:
 
 ```bash
 cd backend
-npm install
+cp .env.example .env
+npm ci
 npm run dev
 ```
 
----
-
-## Environment Variables
-
-```env
-PORT=
-MONGO_URI=
-JWT_SECRET=
-OPENAI_API_KEY=
-CLOUDINARY_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-REDIS_URL=
-```
-
----
-
-## Commit Convention
-
-Examples:
+Start the frontend in another terminal:
 
 ```bash
-feat: add authentication routes
-feat: implement chat module
-fix: resolve websocket disconnect issue
-docs: update project documentation
-refactor: optimize dashboard component
+cd frontend
+npm ci
+npm run dev
 ```
 
----
+The frontend runs at `http://localhost:5173`. The API defaults to `http://localhost:5000/api/v1`, and its health endpoint is `GET /health` beneath that prefix.
 
-## Pull Request Rules
+## Documentation
 
-* PR must target develop branch
-* PR must contain clear description
-* PR must pass local testing
-* PR must not contain unrelated files
-* PR should be reviewed before merging
+- [Architecture](docs/ARCHITECTURE.md): current components, data flow, and boundaries
+- [Local Setup](docs/LOCAL_SETUP.md): database and environment configuration
+- [API and Socket Reference](docs/API_REFERENCE.md): implemented contracts and sample payloads
+- [CI and Branch Protection](docs/CI_AND_BRANCH_PROTECTION.md): required checks and merge rules
+- [Project Status](docs/PROJECT_STATUS.md): delivered features, gaps, and acceptance status
+- [Implementation Plan](docs/IMPLEMENTATION_PLAN.md): ordered remaining work and dependencies
+- [Team Ownership](docs/TEAM_OWNERSHIP.md): roles, branches, and handoff contracts
+- [Submission Checklist](docs/SUBMISSION_CHECKLIST.md): assignment deliverables and release evidence
 
----
+## Verification
 
-## Merge Policy
+Run checks in both packages before opening a pull request:
 
-Only Project Lead / Repository Owner can merge PRs into develop and main branches.
+```bash
+cd backend
+npm run lint
+npm test
+npm run build
 
-Contributors must never merge directly into main.
+cd ../frontend
+npm run lint
+npm run build
+```
+
+Automated backend coverage is not yet established. A passing test command alone must not be reported as feature coverage; see the test workstream in the implementation plan.
+
+## Collaboration
+
+All work should branch from `develop` and return through a reviewed pull request. Do not commit secrets, generated build output, recordings, or local database files. Read [CONTRIBUTING.md](CONTRIBUTING.md) before taking ownership of a module.
+
+Both `Backend CI / Backend quality` and `Frontend CI / Frontend quality` run on pull requests and pushes to `develop` or `main`. A pull request must not be approved, accepted, or merged until both checks pass on the latest commit. Repository administrators must enable the branch rules described in [CI and Branch Protection](docs/CI_AND_BRANCH_PROTECTION.md).
+
+## Assignment Context
+
+This project is being prepared for the Zidio Development MERN assignment, March 2026 industry edition. Performance, concurrency, availability, AI accuracy, and uptime figures in the brief are target requirements until they are measured and documented; they are not claims about the current milestone.
