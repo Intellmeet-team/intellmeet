@@ -20,6 +20,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local"
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      default: null
+    },
     role: {
       type: String,
       enum: ["admin", "member"],
@@ -36,6 +47,10 @@ const userSchema = new mongoose.Schema(
     timezone: {
       type: String,
       default: "UTC"
+    },
+    lastLoginAt: {
+      type: Date,
+      default: null
     }
   },
   { timestamps: true }

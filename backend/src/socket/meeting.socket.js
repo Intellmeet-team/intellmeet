@@ -1,24 +1,7 @@
 import { MeetingMessage } from "../models/MeetingMessage.js";
 
-type JoinPayload = {
-  meetingId: string;
-  user?: { id?: string; name?: string };
-};
-
-type TypingPayload = {
-  meetingId: string;
-  userId: string;
-  isTyping: boolean;
-};
-
-type ChatPayload = {
-  meetingId: string;
-  senderId: string;
-  body: string;
-};
-
-export function registerMeetingSocketHandlers(io: any, socket: any) {
-  socket.on("meeting:join", async ({ meetingId, user }: JoinPayload) => {
+export function registerMeetingSocketHandlers(io, socket) {
+  socket.on("meeting:join", async ({ meetingId, user }) => {
     socket.join(meetingId);
     io.to(meetingId).emit("meeting:user-joined", {
       userId: user?.id,
@@ -27,11 +10,11 @@ export function registerMeetingSocketHandlers(io: any, socket: any) {
     });
   });
 
-  socket.on("meeting:typing", ({ meetingId, userId, isTyping }: TypingPayload) => {
+  socket.on("meeting:typing", ({ meetingId, userId, isTyping }) => {
     socket.to(meetingId).emit("meeting:typing", { userId, isTyping });
   });
 
-  socket.on("meeting:chat", async ({ meetingId, senderId, body }: ChatPayload) => {
+  socket.on("meeting:chat", async ({ meetingId, senderId, body }) => {
     if (!meetingId || !senderId || !body) {
       return;
     }

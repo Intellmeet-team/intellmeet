@@ -17,7 +17,7 @@ async function startServer() {
   });
 }
 
-async function shutdown(signal: string) {
+async function shutdown(signal) {
   console.log(`${signal} received. Starting graceful shutdown...`);
   server.close(async () => {
     await disconnectRedis();
@@ -33,7 +33,7 @@ process.on("SIGTERM", () => {
   void shutdown("SIGTERM");
 });
 
-startServer().catch(async (error: unknown) => {
+startServer().catch(async (error) => {
   console.error("Failed to start server", error);
   await disconnectRedis();
   await disconnectDatabase();

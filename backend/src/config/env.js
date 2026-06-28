@@ -14,6 +14,7 @@ const envSchema = z.object({
   JWT_ACCESS_EXPIRES_IN: z.string().default("15m"),
   JWT_REFRESH_SECRET: z.string().min(16),
   JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
+  GOOGLE_CLIENT_ID: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_SUMMARY_MODEL: z.string().default("gpt-4.1-mini")
 });

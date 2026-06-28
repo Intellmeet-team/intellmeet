@@ -1,8 +1,7 @@
-import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { ApiError } from "../utils/ApiError.js";
 
-export function errorHandler(error: any, req: Request, res: Response, next: NextFunction) {
+export function errorHandler(error, req, res, _next) {
   if (error instanceof ApiError) {
     return res.status(error.statusCode).json({
       success: false,

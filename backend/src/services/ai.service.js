@@ -3,17 +3,7 @@ import { env } from "../config/env.js";
 
 const client = env.OPENAI_API_KEY ? new OpenAI({ apiKey: env.OPENAI_API_KEY }) : null;
 
-type MeetingInsight = {
-  summary: string;
-  actionItems: Array<{
-    title: string;
-    description?: string;
-    assigneeName?: string | null;
-    dueDate?: string | null;
-  }>;
-};
-
-function fallbackInsights(transcript: string): MeetingInsight {
+function fallbackInsights(transcript) {
   const lines = transcript
     .split("\n")
     .map((line) => line.trim())
@@ -26,7 +16,7 @@ function fallbackInsights(transcript: string): MeetingInsight {
   };
 }
 
-export async function generateMeetingInsights(transcript: string): Promise<MeetingInsight> {
+export async function generateMeetingInsights(transcript) {
   if (!client) {
     return fallbackInsights(transcript);
   }
@@ -50,7 +40,7 @@ export async function generateMeetingInsights(transcript: string): Promise<Meeti
   }
 
   try {
-    const parsed = JSON.parse(text) as MeetingInsight;
+    const parsed = JSON.parse(text);
     return {
       summary: parsed.summary || "",
       actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems : []

@@ -1,9 +1,8 @@
-import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { verifyAccessToken } from "../services/jwt.service.js";
 import { ApiError } from "../utils/ApiError.js";
 
-export function authenticate(req: Request, res: Response, next: NextFunction) {
+export function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

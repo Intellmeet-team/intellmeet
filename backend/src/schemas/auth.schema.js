@@ -21,3 +21,9 @@ export const refreshTokenSchema = z.object({
     refreshToken: z.string().min(20)
   })
 });
+
+export const googleOAuthSchema = z.object({
+  body: z.object({
+    idToken: z.string().min(20)
+  })
+});

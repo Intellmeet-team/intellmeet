@@ -1,4 +1,3 @@
-import type { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Meeting } from "../models/Meeting.js";
 import { ActionItem } from "../models/ActionItem.js";
@@ -6,7 +5,7 @@ import { User } from "../models/User.js";
 import { generateMeetingInsights } from "../services/ai.service.js";
 import { ApiError } from "../utils/ApiError.js";
 
-async function resolveAssigneeId(assigneeName?: string | null) {
+async function resolveAssigneeId(assigneeName) {
   if (!assigneeName) {
     return null;
   }
@@ -15,13 +14,10 @@ async function resolveAssigneeId(assigneeName?: string | null) {
   return user?._id ?? null;
 }
 
-export async function generateInsights(req: Request, res: Response) {
-  const { meetingId, transcript } = req.validated?.body as {
-    meetingId: string;
-    transcript: string;
-  };
+export async function generateInsights(req, res) {
+  const { meetingId, transcript } = req.validated?.body;
 
-  const meeting = await Meeting.findOne({ _id: meetingId, "participants.userId": req.user!.id });
+  const meeting = await Meeting.findOne({ _id: meetingId, "participants.userId": req.user.id });
   if (!meeting) {
     throw new ApiError(StatusCodes.NOT_FOUND, "Meeting not found");
   }

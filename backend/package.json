@@ -4,11 +4,11 @@
   "private": true,
   "description": "IntellMeet production-grade backend API",
   "type": "module",
-  "main": "dist/server.js",
+  "main": "src/server.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
+    "dev": "node --watch src/server.js",
+    "build": "echo 'JavaScript files ready - no build needed'",
+    "start": "node src/server.js",
     "test": "node --test",
     "lint": "eslint ."
   },
@@ -33,15 +33,6 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/cookie-parser": "^1.4.9",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/morgan": "^1.9.10",
-    "@types/node": "^24.3.1",
-    "eslint": "^9.35.0",
-    "tsx": "^4.20.5",
-    "typescript": "^5.9.2"
+    "eslint": "^9.35.0"
   }
 }
