@@ -2,30 +2,51 @@ name: Backend CI
 
 on:
   pull_request:
+    branches:
+      - develop
+      - main
   push:
     branches:
       - develop
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  backend-build:
+  backend-quality:
+    name: Backend quality
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     defaults:
       run:
         working-directory: backend
 
     steps:
-      - name: Checkout Repository
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
 
-      - name: Install Dependencies
+      - name: Install locked dependencies
         run: npm ci
 
-      - name: Build Backend
+      - name: Lint backend
+        run: npm run lint
+
+      - name: Test backend
+        run: npm test
+
+      - name: Verify backend build
         run: npm run build
